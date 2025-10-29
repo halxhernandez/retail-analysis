@@ -1,10 +1,12 @@
 """
 Módulo de análisis estadístico para datos de retail
 Incluye segmentación RFM de clientes
+Incluye análisis de patrones temporales de ventas
 """
 
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 class RetailAnalyzer:
     """Clase para análisis de datos retail"""
@@ -16,7 +18,8 @@ class RetailAnalyzer:
             df: DataFrame con datos limpios de retail
         """
         self.df = df
-        self.version = "1.0.0"
+        self.version = "3.0.0"
+        self.analysis_date = datetime.now()
 
     def get_basic_stats(self):
         """Retorna estadísticas básicas del dataset"""
@@ -27,6 +30,8 @@ class RetailAnalyzer:
             'total_transactions': len(self.df)
         }
         return stats
+
+    # ========== MÉTODOS DE SEGMENTACIÓN RFM ==========
 
     def customer_rfm_segmentation(self):
         """
@@ -65,5 +70,77 @@ class RetailAnalyzer:
         rfm = self.customer_rfm_segmentation()
         return rfm.head(n)
 
+    # ========== MÉTODOS DE ANÁLISIS TEMPORAL ==========
+
+    def sales_by_month(self):
+        """
+        Analiza ventas agrupadas por mes
+
+        Returns:
+            Series con ventas totales por mes
+        """
+
+        monthly_sales = self.df.groupby(
+            self.df['InvoiceDate'].dt.to_period('M')
+        )['TotalAmount'].sum()
+
+        return monthly_sales
+
+    def sales_by_day_of_week(self):
+        """
+        Analiza ventas por día de la semana
+
+        Returns:
+            DataFrame con ventas por día
+        """
+
+        self.df['DayOfWeek'] = self.df['InvoiceDate'].dt.day_name()
+
+        daily_sales = self.df.groupby('DayOfWeek').agg({
+            'TotalAmount': ['sum', 'mean', 'count']
+        }).round(2)
+
+        # Ordenar por días de la semana
+        day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                    'Friday', 'Saturday', 'Sunday']
+
+        daily_sales = daily_sales.reindex(day_order)
+
+        return daily_sales
+
+    def sales_by_hour(self):
+        """
+        Analiza ventas por hora del día
+
+        Returns:
+            Series con ventas por hora
+        """
+        hourly_sales = self.df.groupby(
+            self.df['InvoiceDate'].dt.hour
+        )['TotalAmount'].sum()
+
+        return hourly_sales
+
+    def get_peak_sales_time(self):
+        """
+        Identifica el periodo de mayor actividad
+
+        Returns:
+            Dict con información de pico de ventas
+        """
+        hourly = self.sales_by_hour()
+        peak_hour = hourly.idxmax()
+        peak_amount = hourly.max()
+
+        return {
+            'peak_hour': peak_hour,
+            'peak_amount': peak_amount,
+            'analysis_date': self.analysis_date
+        }
+
 if __name__ == '__main__':
-    print(f"Módulo de análisis - version 0.1.0")
+    print(f"Módulo de análisis - version 3.0.0 - RFM + Temporal")
+    print("Funcionalidades:")
+    print("  - Segmentación RFM de clientes")
+    print("  - Análisis temporal de ventas")
+    print("  - Identificación de patrones")
