@@ -20,7 +20,34 @@ Online Retail II - UCI Machine Learning Repository
 - Matplotlib, Seaborn
 - SQLite
 
-## 👥 Equipo
+## 🔗 Repositorio
 
-- Analista 1: Data cleaning y EDA
-- Analista 2: Visualizaciones y SQL
+Este proyecto utiliza Git para control de versiones
+
+
+## 👥 Colaboradores
+
+- Analista 1: Data Engineering
+- Analista 2: Visualizaciones y Reporting
+
+## 🚀 Instalación
+
+\`\`\`bash
+
+# Clonar repositorio
+
+git clone <url-del-repo>
+
+# Instalar dependencias
+
+pip install -r requirements.txt
+\`\`\`
+
+## 📝 Workflow de desarrollo
+
+1. Crear rama para nueva funcionalidad
+2. Desarrollar y hacer commits
+3. Push de la rama
+4. Crear Pull Request
+5. Code review
+6. Merge a main
